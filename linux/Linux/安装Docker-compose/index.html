@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E8%BF%AA.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E8%BF%AA.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhengyidi.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":"flat","style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="在CentOS中安装docker compose">
+<meta property="og:type" content="article">
+<meta property="og:title" content="安装Docker Compose">
+<meta property="og:url" content="https://zhengyidi.github.io/linux/Linux/%E5%AE%89%E8%A3%85Docker-compose/index.html">
+<meta property="og:site_name" content="Zhengyidi&#96;s 学习记录">
+<meta property="og:description" content="在CentOS中安装docker compose">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-06-16T00:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-13T14:58:22.514Z">
+<meta property="article:author" content="zhengyidi">
+<meta property="article:tag" content="linux">
+<meta property="article:tag" content="docker">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://zhengyidi.github.io/linux/Linux/%E5%AE%89%E8%A3%85Docker-compose/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>安装Docker Compose | Zhengyidi`s 学习记录</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Zhengyidi`s 学习记录" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Zhengyidi`s 学习记录</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">休对故人思故国，且将新火试新茶。诗酒趁年华。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhengyidi.github.io/linux/Linux/%E5%AE%89%E8%A3%85Docker-compose/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zhengyidi">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhengyidi`s 学习记录">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          安装Docker Compose
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-06-16 00:00:00" itemprop="dateCreated datePublished" datetime="2021-06-16T00:00:00+00:00">2021-06-16</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-11-13 14:58:22" itemprop="dateModified" datetime="2021-11-13T14:58:22+00:00">2021-11-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">在CentOS中安装docker compose</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
+  <script id="hbeData" type="hbeData" data-hmacdigest="3eddb0915d1e3ba81d7e132f9d60c09c53731edecfee1b034ba78b62e7b9bac2">22064b17c03cb0c0e58c99349b6889d0b31470871e725085fde7c8feed9af7ef53893031c762e7c382327ccf3776c47b644cc1036704c9b6151b72afdda69356c519b104b408d2ffc35c88a479413fe82a5395eff3179bb5e538f92583fd06eef2929310a06a52c1b3d39d53c4c44191d18a96ab6955995f703c2f04136c418957e34b714173129f7dfe9b6cb1d7b1280d1f72c949d9032580e1b92e872334818e4a650d7278c23a40bf56a981eb53755bef361ea6bdfd749d143b5a66d959f366433c5d393c5ea957d3dee4e9aa10494653d05693017a3bbeda171c80f3b8d0e3e41a654f4e8826c3a0ca3a2b164a04e28696e2b343a5c843e1d52005cae0a11aff61052e2477d503e258bb9086ad2c16f3a9d5e7c91b4d54e0ffa0578db334649b80b23869cac36c27b3964f39b206bdbba848c44551f729ffa0975fc76f590571053e8f7ffd96e7a60fd6797c62b45f39f7cf61f4aead9b7d417cfc46a9114b5436d6752f17e006166a0689437f992a43e6d6c1d10876c6c0f847e9cf130df234a386c72f5099d86e40dfdfc17620a89b51322599628f3727bf1eecddb1c90736b4abb04265dc04cf0880303010330ec237ef00674c0e244a117c706b6350704a2575c2239a55f35e047d2d330b9f883041bb58c2f6a58c9be212a59279f7b721a32c8d90dbfacb2ff4bbecea8cfbb3dc03179d8ae9e918a925be58b3383ee60f47fb01992cc19186963b1c3a294a260f02bc507855aba072ead73481c66775318401cb36aee04db61fe38eec45ac65d11801fef841e37dfcb25fb5dc7c9746a22baa455a1f318541c2e62ecc804bf090d02f2ab8a7a3e2bfdcbd28b91560da15e9359f2b52e8de17880a257723f1214ade6a5cc6b0586aad6365b22897e6efaa0a29b06e906e7be855176cb93a9c572be42fab7862142e2770824ad2eccaa8714c26531163232f8a764ef12951269740eb3b476e2a4412c4bcae05ded9bcdf0e1582f76eb1b8de08aef391b6194c112ece3c997dcb3a8d79d81c85f357b3046da8746256cae481e531d3e15e6cbe7c099f9160dbd4d3ad486e6cc27acf2a9c57db2b0088e8bd1985e0d2a4b46d420dee5909b4d662950fdd087badd3a8c53c49c91b000b8ddd094707144b02d2580f90053e5597b138c36a717ca3d4b05d23613dcc2c96e38a30945b29245ef1b05c6ab0f1e119738102d5efda537c9920a9c2a4fb191acd25f271f0c4efa21eb158079598cd2c227c2aa493a5d9f88b07b2bd73185ca02b372969f5249957fcce2e5c0ab007f8caa5eb6f95dff466b14749637ed08c71864a77a99258c2317c752c6b6b45ce68e897074806aa7c068187815d1c5ef727f1690daabcd8b8c78029107e864a0421e7d9546abfc613c1dd164be106b456ce0024feef326dd7f3b9dc25808bb8dc58d7082d42ce6c0c4079a6449b6d3dfa51c9975c97e8227c41bd78035acb180b3a25371f98f3cfcdf792bec5ec879eda95759f5631054d8ee0bfca2293d6e9d742f9c58340c0b21e1112aabb5e54ed50d15c80575d83f3231ff2ac0734d294e7977bf65e85b2618229de1a347fbd411be4a266c3502756972bceddaf3cb3749ff3ed7a9b41096a23bef00e6fa4c1accd2d751e8578fe67058a15b3760dabcf05532301174a45563b31e6eecb4ae9b1f18a99bb0f4106170b5c4b45ee86da1e0c37140a8596d364e69326702e999a39dacc865028ec641c16eec62cb59414a2f59200dc0fd063bbf0ff80beeae5fce9707c685e510f5aeb791c42cc813e914c3a6fe8c8815adb79e026947efca9e5df890fd8aa290491541f2ac7090e4cfd549d8c0b576d1e3f22f723a4a20e80a2c53f5bdcd1eb88cf5e48417e249b72cf842103361d74bcfe821a8c23c3e6a350cd82b60bac22e450503bbbef6a6d3e1ad27a21e0481e67512f0b5c6eb621b66962e25d6ec7a8631fd2469dacd65e2338a59d01a4ce302a6c8beb56f5ab2cda8ba6063ab6ce875a64457712aaaea8573d2693471a0fc55ea8dadfcbaddde566a61a2e3a70cf74da5e8b05116664ad367de37776eed954173cd03c0516d85c42d5614c0d5403f11bf5d9bd86ab5e304fcefa677489d19413946ad38c8bb549bc376c073b0206429ff3936f960cc00fafddc8f93f603d8897a25b67b247be64d844e08fe883a32231e6a9db51ce75ae103d0d9e529dee4340b631e0dc2d42a3a7b6197a7962408cada281797ec26dd05c2ee1b5fcf3a6ac08a20aed4250f28f7b7bc724bbb07c17abbba10a64d4654a38d600b525b8d6995eaecc553ce8107ac526a7ed75387a45720f6e6717f165470265a1978cbff18f5a99fa28133375e368b6e944916d278d63bc6d0443a3b9047a0757669f03ddd89593b380cb783baebd645bcb0600aaeeecfbd63a110aed83959cf0b61eff747cd76318160dc18b642a658571d538eef11e08d3bb1afcf8</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">Hey, password is required here.</span>
+      </label>
+    </div>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+              <a href="/tags/docker/" rel="tag"># docker</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/elasticsearch/Elasticsearch/Docker%E5%AE%89%E8%A3%85Elasticsearch/" rel="prev" title="Docker安装Elasticsearch">
+      <i class="fa fa-chevron-left"></i> Docker安装Elasticsearch
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/elasticsearch/Elasticsearch/Elasticsearch%E7%B4%A2%E5%BC%95%E8%AE%BE%E7%BD%AE/" rel="next" title="Elasticsearch 索引设置">
+      Elasticsearch 索引设置 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zhengyidi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhengyidi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhengyidi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zhengyidi1357@gmail.com" title="Contact Me → mailto:zhengyidi1357@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>Contact Me</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhengyidi</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<!-- <script type="text/javascript" src="/js/love.js"></script> -->
+<!-- 鼠标悬浮 -->
+<script type="text/javascript" src="/js/mouse-float.js"></script>
+
+<!-- 鼠标点击爆炸效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="/js/fireworks/anime.min.js"></script> 
+<script type="text/javascript" src="/js/fireworks/fireworks.js"></script>

@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E8%BF%AA.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E8%BF%AA.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhengyidi.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":"flat","style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="设置SSH免密登录">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设置SSH免密登录">
+<meta property="og:url" content="https://zhengyidi.github.io/linux/Linux/%E8%AE%BE%E7%BD%AESSH%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95/index.html">
+<meta property="og:site_name" content="Zhengyidi&#96;s 学习记录">
+<meta property="og:description" content="设置SSH免密登录">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-07-24T00:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-13T14:58:22.514Z">
+<meta property="article:author" content="zhengyidi">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://zhengyidi.github.io/linux/Linux/%E8%AE%BE%E7%BD%AESSH%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>设置SSH免密登录 | Zhengyidi`s 学习记录</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Zhengyidi`s 学习记录" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Zhengyidi`s 学习记录</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">休对故人思故国，且将新火试新茶。诗酒趁年华。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhengyidi.github.io/linux/Linux/%E8%AE%BE%E7%BD%AESSH%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zhengyidi">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhengyidi`s 学习记录">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          设置SSH免密登录
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-07-24 00:00:00" itemprop="dateCreated datePublished" datetime="2021-07-24T00:00:00+00:00">2021-07-24</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-11-13 14:58:22" itemprop="dateModified" datetime="2021-11-13T14:58:22+00:00">2021-11-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/linux/" itemprop="url" rel="index"><span itemprop="name">linux</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">设置SSH免密登录</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
+  <script id="hbeData" type="hbeData" data-hmacdigest="8186c247e34e5edb17392d568cda5d428f0fbeb1db63af5f8ecdf240333216a5">22064b17c03cb0c0e58c99349b6889d0fcc4feb527f3a5619b7ab26cd2c679a1413a06211e10743fe01a2e120ce41179123b2645ed83ab472060537e6bee9ccba11f9cd2726486e3873219c8f03a48c5c30df845488ba75fffcdc8921d4a8bd11cfb96877381ab79b0944dde9f5cf02fb74d6f260d1a59ed13b756862f6ad31e72a83ee01a87e3ac3eb7c85cd205e18d341878c7e2e70fe8a563a0b76efa2720dd99ec8bf32e70d16046597804fc0af525fce17562a368e9d952a05f4d4d610f373897954bfa8516381c2c93cb4c8c86f6309e333cb0182a2c94145364d7528b09237f63672449f54f2a346550c35b18dab512c34d0ea36d8bd36935ff074f8ac0417eaddfa97bd60e4259b6525fa675de764f936e0779a16297046da76cea3c2d0dbb749e063fc024f2cbdb6b998a0af56edca99ebbadb33ebea04fedb56ce52631d7be6d2c6fa5d8a654d23dda27822ce13c635252d5e09ff96103c4f75c1291b1824ef6cd9221aa4481e351069f0b359288156e47af78b158722a32b6bd3f4185761f1d8b1d7b4af981280a148952bb7e2dbdaa783c7f6f99b6abc441ff8db87898ec1b6d5e1fd8bf4851273d1a47ed16bdf03d31e6c545b91a1b5459b1a419c8058656ddd821e365124db284207bb62dbf266c51cee1ce9bf0828dc2a88b62a1d9e39d3fb8713ae0340a405a3f38cb873dac0072aa263a19e6c8f55a8001aa60a933508d1ddc6180396e2725bb973b4b0bb76ff025d522086d3a4a623a9c0f393259482dcbf3fdda297d9cd3cc82229d1bce7664ea9d044de8e83a153eae0419e4ccad55233f5b64e0c0da4b55d3a465d66828418758628dfb509535a18e456adf660bcbb3a56b509510a2519e457a88f38fcfb7388d954d678cd2a8c95cfd428f140be026a954231adad89a0d9376e4a16615ae4a1cd6f5e32cfee6b725233260c55e88abacb619106ecf23d0bb9834ab59fde55d87825a72e35f31d9eccdb89d9075f59769223648f3126877db3047d118ce6b1129e88dd72959a9627275bf0f9ce9746ff36f50a26e307694865b2afb7c76ddaf852f55585794695ccab35ad0af4df722cae7fb5e709090edd87f4403a886883bbd767197c8ee45b20a81b174615c6636b9102a07c046c01c8f0a7492f9bf7a1e2370552d020fa19ad6f634776ef489ef0e988684203425d7e5717d96f9a7ad4a88a54a82cf679f06420ef3b25a9d18469771006361331a4615e088a58550dfec0ac3edf63e621a0b6c5b5aac3aaffddbe465a5c795944e1681d18d2c60e3a739e664e0a94cd4e198adc4e525fb486a0ac8eabf04f09566ec5f9c4e126bb0e829831c048ba23c871aa234992cf3fe34658c6894a3c676e07b765648c70600b7c7cf1beb8bab2263f6cb902af9fc388d16b4d7a7a41c5a945cb3b3af084855803d8439dde0d84ceb9dcf73fa5a1d166fab645c4c1438f5c603d0532e91129216939aa863aee6437d9394be225eeedf99fa379b07a0a54d2532e54fc9d13c1ddd97b7bf3b1c848b7d16af30f004e1a14284386e60e1ae0719520cdd5e48eb9194f5e9df9385b57624094c9a48392bf40b591813b7f006a6069c311a0dc6119225756a1110d0c751352164ea1533ab463bc1da2b1729501668cfdf59acec51baa98d5518b46bbc1b23ff107dd362f548cb6555983857287f8eed224ad7dece530a37b2bd1ff96ecacc641b899cb885f6010259ab66dc671313712c80c5423543584bc620a3dd002f5ebba34cb5454e24f1cdadf0dc6b896995f90faf0bb491aca38af56fd04bab4f15154f588ecde10c4ac72a6f48237d575cf172cf179a7d36d2da60d017389fad209bead4598d2ec3c5c73b3d8c152c3d99242fea3abfa4ebbd36f01c038813e3090a8dc1ef7d964a002d5cedb980fc06466db7baeda3549f4a56b0461c53a0f70d8eb152c150a00583d81734b5666770de45f616a7df349383f23b2d76632b337cb905404fc8e2acec15e4e86f4339257be2d1b23d1b9d9aa2da6e40e007d3f7680987d1d2058357702fbfafd936dd799e5001a2d6121875b81763112b4e1d1761ee074f1038a3e12f16d660015284fb34b652ea3dbc4d9ede069b820abb7af50284a096af7051803727204602a648328bb2d15d5d1a75aa421351978ee3da26c6a07eb89e619992d9200bdb0f61ded97f245d62345e5f8b62192127de98c4ca3b2a8e34664a493af7724b6e1ace614d197e03604ef7b6898adbcdf0a49bdb7444019d0cd5e3bbf0920a650152534aeed926842dd335ad5155cb4ca0c8d0fac925010e46a567ad4bd4fa7f1e1f4a0aef5db6b9c6a17f89822ee43d846c1a5ed13934259d262f6dd47c5dbaa38684c1708533dc47ae2da3265ee819ee9de0664b3d882ca316bbbb7f25e504ac5e1b036f2d6d7d828be26f8d9b13ecb6e3ccfc84fc9278bd5a6def3ae4a198d96fa66c2837e92d3aed399badb6653f6a44f3a1e45dc68481754192c99bbd261803d0958db157bcec9b7a34f7ffd50ad6111016172b15cb5f81f0d97f7ceb1c389890d489c636b7e81421a3374fed1417f5656d863ff40b5be17d8c89e26035cde2311b30884273ec3cfdf56ad3006ac28d6016cec30d20e7ec70e0d0572c789a52be1a3b4e9033af42ac084eb6959fcbfa4b2f99d3674db4c9c2e4372721f2691545d00a91e701c128a4a44510f286c6358f0639bd8a46ec686324fb3c9d69aca77ab67482284ac00cad575547ce29d9eaa5000ce964d8bc1e67af153e3bd0b4f51fc89d64ff82b576657eb46b07e8de9edfb4f9dd66629cb78e79f9989a9418b4f5dec49dcea2973c936c5dc7c61c65a7bf9872e6b09ce9d8edb92cf23ac6439c733ce19e17b4801645e85457ab886fc91f10e61823e322e4711635e3fa7a8a9b89ceffc280ffee1916f075b557c50d53559070d3e872926d0e491afe55a9fc5deac42108ed7502508e05932d5d8838fd7ba254b1f78636971445261fae29fa4ff0c0216a9161fbcd9e90ddf34890f904a7d60df70a3756bb5f9af2fc9a087fe9ca6d12241c7d550033e1dc535c537dbcf6bbdd8c50dd2d3474694a39b7c0d31ebc2abb2117f061255da1057a0083ef88136ec60edcd62f66fe919688a5e935bd1cc559e3b5c60036ac5c01bdb85070e32ddfa735f884e5996d4998939478f2084abb72742084a352df07ff398e77fa2a12f18539b8788efac7f741a3f4441f4e8f382593291c54e017daf878e292dad1bd58604573571390372ac641328c7b8faecceaaa859637aa8008ea7efa977dbc2ca346b4a3287986e4cca9cbf1e84aa05f572755a45fc93a2416fd8f04b02baa1405f9e0a8882fe628d9db6dbd2a79e68d42c6207e472ccf97c5375c6180864b3cfcbd9956adc475cd466f6439e6165ccbe79c6b85478f16072db8097ac9a5446330eb16395ae05b934c8933283e7e94f4c4ad953fc50d946af9c1bedcc5dda891f863a26e1beb9187dfe0bd0127c01c83d74f0239a8112a90f73adbaae8e8b5bdb3921efe510dc374632c642c6ef2efcc3a1a85ae933471b43ded8fbf4a80e04ead465d2665ec8d88f7c6e527aa882e3fb2c80ffc200fe9e674079a31be1b12b4cb430851ccd00d89483261feb70acadb9f50988abb6aab7ca86f8dbe05769309a55445f50198081dc4617aea8abe41ad3ac9b9204437f1a999a8b5c02af9984f77b4019cbcfde9465fbbe8be0df959e870340697824465c34d8abcacba7f18239cbe70ed7e7ec2a127bd0778857814b0215711ca2def62326fde262ea6b0d4e924f6dc4ed6510ad3100ae752152fe0917a7354ca9f3724639756f28f8a477eecb16ec152097c3f6bd7e4db12be34cc090020d4621292116953a1ab2be9d5f92221e86af3d7801df7777ccc7ea25d73197d30772528a54f4c63119d199e0eabf81c8a5ad5a2434de69a352e4ccaa1c20bd39eac7a999a47425876942af0264a0654192cfb755a1d8f9bb8b351123cfdc4700133ac69dce3537e3e18e6d0bdef010ca7fee755</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">Hey, password is required here.</span>
+      </label>
+    </div>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/linux/" rel="tag"># linux</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/Design%20Pattern/15.%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F/" rel="prev" title="15.适配器模式">
+      <i class="fa fa-chevron-left"></i> 15.适配器模式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/redis/Redis/Redis%E7%9A%84%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="next" title="Redis数据结构">
+      Redis数据结构 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zhengyidi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhengyidi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhengyidi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zhengyidi1357@gmail.com" title="Contact Me → mailto:zhengyidi1357@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>Contact Me</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhengyidi</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<!-- <script type="text/javascript" src="/js/love.js"></script> -->
+<!-- 鼠标悬浮 -->
+<script type="text/javascript" src="/js/mouse-float.js"></script>
+
+<!-- 鼠标点击爆炸效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="/js/fireworks/anime.min.js"></script> 
+<script type="text/javascript" src="/js/fireworks/fireworks.js"></script>

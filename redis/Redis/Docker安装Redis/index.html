@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/%E8%BF%AA.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/%E8%BF%AA.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"zhengyidi.github.io","root":"/","scheme":"Pisces","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":"flat","style":null},"back2top":{"enable":true,"sidebar":true,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":true,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="Docker安装Redis">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Docker安装Redis">
+<meta property="og:url" content="https://zhengyidi.github.io/redis/Redis/Docker%E5%AE%89%E8%A3%85Redis/index.html">
+<meta property="og:site_name" content="Zhengyidi&#96;s 学习记录">
+<meta property="og:description" content="Docker安装Redis">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:published_time" content="2021-08-03T00:00:00.000Z">
+<meta property="article:modified_time" content="2021-11-13T14:58:22.518Z">
+<meta property="article:author" content="zhengyidi">
+<meta property="article:tag" content="redis">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://zhengyidi.github.io/redis/Redis/Docker%E5%AE%89%E8%A3%85Redis/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>Docker安装Redis | Zhengyidi`s 学习记录</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Zhengyidi`s 学习记录" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Zhengyidi`s 学习记录</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">休对故人思故国，且将新火试新茶。诗酒趁年华。</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-fw fa-home"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-fw fa-tags"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-fw fa-th"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-fw fa-archive"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://zhengyidi.github.io/redis/Redis/Docker%E5%AE%89%E8%A3%85Redis/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="zhengyidi">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Zhengyidi`s 学习记录">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Docker安装Redis
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-08-03 00:00:00" itemprop="dateCreated datePublished" datetime="2021-08-03T00:00:00+00:00">2021-08-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="fa fa-calendar-check-o"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-11-13 14:58:22" itemprop="dateModified" datetime="2021-11-13T14:58:22+00:00">2021-11-13</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/redis/" itemprop="url" rel="index"><span itemprop="name">redis</span></a>
+                </span>
+            </span>
+
+          
+            <div class="post-description">Docker安装Redis</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
+  <script id="hbeData" type="hbeData" data-hmacdigest="32260a0a2afd33e4e2307fb602c38a6a54e3072e1dbb2aa2db37e4c91f844913">22064b17c03cb0c0e58c99349b6889d0fcc4feb527f3a5619b7ab26cd2c679a134eed9d1427ac38e395835e81a47da4ad98ed393e7787456954ba810a8d76cf0600041fa249c87ee8b53b6c1a0a9b4f655476f8a943680798af0b6c3a9d25cd8e708d7e3ddcce0f5f06f6b8a8a115d9c7c011a90507a96b1969ea3f16744189f18cd06ab3c7a4a4754905e3433881edf6566d7296b2deb89396bb74a889ae656dcb70823e341c9dfa708a51db489548b96857b17a693b4b696c425326960496844396397b52d1128b4c2a1f755e717c8733ea8523784039fb340e4012ae765cbfc054a63dac2f3543a8f840abf78369e7b81207b2bf8c75410f351c06b21417a086b21249dc573ab81b33794a22d003807893daafa446f076014a8141e69755a0264a9cc233201f95d3eca0f2077a6b323f3b761aad3642a5133e7f6b47872892a5152a0af34465c73b6d586f18f304d9bcafd5f561d7c3d8a6a82041da9c63be1a62c9819e1e065ad8db2315e62cce22124bab81079aa34b5d7d77b89c236766acc7f927aca3f96874bdede422baa54c8ed953aaf763f7b63577878ac2304ff66cda2da902d77e7b02d4a9d32a8f727cf9b398a65d234f74dd3053258cafda30721a24fd782d50d64bbdcf0095846f3b0423da1aea5f7cfa874b7ad5c122eff7639ca67d00647a37a86a3bac36f4404979002103a476f3151c529a678b2f865a9e2665d1dfefab0955ca96d69d3cdea164c59be32209af9378e2d294cfcb0f96dc610dadb84080d641cbd29c3b267f837ad02e67fc3d21ae8d043fde6b17ef9b966d519b409aef6dd6b0f698b3f10d1bfba87c3b476b414c686a1598028be437a993494d1ec4dded79c792f5bf7a979f8cbb3875f1dc8632e51af5c57ece6a26da0fe7a2fbf4a1b6a83c5cec464d092346b79b91843dbbb2bd9b7e4ac03910cf2803b375ccc1a844165083679e47d20fe228206e64db09f3910d38524ee4920cacb87ddecf892978d37b43a8cfd5385a9075ad2d61b423ec0364bc84e66bc2940f769f7520b5c82f6958c9abadccf87ee2c9ec8f2daaeaf1e1ca114a23295fb2e0086176eca71048626449113f267f576c14274205f5937e2317bf6edeba39d5120a34caca1e6d18733b86c708a67b8a8d85a1ae4426e88a98d601c6ae3520159aa9c1426b6845ff66afa0b43cd2c00f111f7d0b21408e44e75d9d8de038ae66497e50c358f67847eb112671a8e8851f3077b285a40b51d2453037a01cfbbb0a02626cf440756eeb93ec99e9bd72dace7c63e227e69c06be983206e550f283417cfd66b5960b66d9aac766ae7cd1abb39a13f93c6c37f0e157e10feae24b251e615be14729cabb9b65930e9641d77220cb87a76693f577244f4818bf9464deafa0757ca237451dc390730cc8ff3938f69b242714367a6a49c831bbedc073191465109e5e1afa46952c0cf888b0ea21bf82e70f281d631f9efcd4cb97902276554017316c83574b91c0f5016dd39da3fc1711328af1b6fdf28ef5e36eab1aafae23fa637f8982cc4244899c881ade82e99a31defaa9721b8c572c970b2a23ea146b5f33ddfa614add0bfd256a70751f49f0369bd29e85926ef23cb350c2cd4a0e572a645337a4a526e07f84af598cc95a0286cda83c99557112af6a5be197a7d5ba1bd315d57b9712a30d08be15966e6a86871b5252433d594265f51a811f5f400b419cad32bd753fc2d9a358f4a44d4c465f89c93c3c098edd5df8385dbcc04957fd3432fdd084769ef1d700a33f017a9c79e4e9fca824d710087ff1fc3976ec08e454de8b910425c864a0eba9d866a1aa5f0abe2e7877ef29b9ad06b156657e14bc69cdae735686ed555025b1e1d623e5841a8719aa179c8ff80b0486e52f18441e80e74b89112d4595668f62f067218058c949a55ddb11c2a25b0b400cdeada2aa4960ff1debf5def005eaa31b92ea66aea905550ab06fd1e22b079902c74b0a0ce98c28ecb22e713ecf87e249ee6f5cec6a35b1a60ebe5ff04a5c7b04190fc4a0456b63400f15bb8be2a2bd9f503e82ccdfb60fee77551bada3dd7ccc311230b302a1048cc20eaae4d46435da229acc40555b06895a28cd39d2105d9a76d79d4a00e5403aff33f7771cfecb918b9425074ffbf6dcc6607ca27ad77fe53200ff1dd6c197966f8bdb36ed7563d965f041460d540581d2f468ac3a05fab3868f0ce5f7b4aebd5c4f218537b0bbae19106cf6dacd8c3c97ba88d02f11ce0390382f930e2b39a26605f273851e37ecda924a6ec51a09f34309ba618274148192aac801790d18d918300f3d47b330a14ec1edb49b81012f3ef6e2317c2a00896d21075ed5c85e255276d60c360d31ececb7e3fa2a5383120e3682b63a454f8f561ebe37c874a575f943c473cc265296817141dd138e7e2fb344056665e9eb4f8ed86c9419609f7b9ba7a259e2f07651a9f5314684eb296fa5602f6562d7b2ef843a9889e88d41dd832847a5c18fb4d521a15608f85b8b0637565ee8c35c3523e9d24d3d886a756d7b9ba79582cb422b0587d1adf9c19b14b2e100d1380319839e6b7dbc41d7be94a5ef8f1288835845b85cba5c892853d2a5da51a18af4a9b50665748de1c53d484ff0ccf8ef4aedc66699001bf684786dce66ef049d4cff21afe676cf21c8737300b64cb2896637ef6bb1586aa22be99e25d315b363853ce4056f338293d042776f06e66c8a5608a61a32cd3ba8933d2796c24418d9fa2fe3a229195a31387c4d5f5b30f4b240b0131ff0d6edbceb33a968493890e421ce182feeb790fd56c4e8c0fa5d874440c5cbe90671f48381dab63025eb3425a41d4c7be5a22aca0d0d7561da4650879c63920835532fe5cd1fe0213e3fd88647d67b8929ba3aaa8679cf2397c159e4fb5028bfc2e89d96a492d028f92b4bfcfec31af39001ef284faba833a3414b0cc2be9bd6a20f7ffa098bfd5ffee254c6f42f76bf1dfc59ec2d4745315845761cfec4d11bbd1f53b016e7f77b0f7dd6cc3d636f58f0a6d74a7c33fdacb13198695a574c5e2c835f91c0fd9f66b0c3a4d2a3e5f104f66e4b91e1b16a2fc4f855f85ff679391ea442e9ccbabe604efa713b27e5604f1353ada742075fb1a3916b8c12ce8b4ccaa86cd063d1578095f78b67e13222a6d0b16830e8de0d4e6a28f32181e74237c560c16c82b54850ae836f3702b7f1aff4e955c4b0b320a2f2bf8da09bab4effc4ce140466dc251a6cff4f47099ec299c352695ec0dd7c8e0003834735a650e0609636331847aeef9c32c14dd03753b30e4d4d88778b0dfcd32da8c911e8920e692a806ac8ad1cb88af3c0da059afcf41b9ef325651223f9f43f10e4cc709129f681f5356e840ec52f77fa1ae0190957622dba79110663632adae8cf6d165e37f289605877a28e7cb63153077a3a345b9bbb091e83dade917bcf4c3d2f76dc484635c085ceca46ed430de74c18fca94f80043d10cbaf7a0e616d3c9999782985aa5ccb57991a4e64eeb63c33231ec374a9c1ec01edeac54f01183a5408d519d44e28e7c0d121388316f9cd8d9367608b4</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">Hey, password is required here.</span>
+      </label>
+    </div>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css">
+    </div>
+
+    
+    
+    
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/redis/" rel="tag"># redis</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/redis/Redis/Redis%E7%9A%84%E5%9F%BA%E7%A1%80%E6%93%8D%E4%BD%9C/" rel="prev" title="Redis的基础操作">
+      <i class="fa fa-chevron-left"></i> Redis的基础操作
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/redis/Redis/%E5%8D%95%E7%BA%BF%E7%A8%8B%E7%9A%84Redis%E4%B8%BA%E4%BB%80%E4%B9%88%E9%82%A3%E4%B9%88%E5%BF%AB/" rel="next" title="单线程的Redis为什么那么快">
+      单线程的Redis为什么那么快 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">zhengyidi</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">39</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/zhengyidi" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;zhengyidi" rel="noopener" target="_blank"><i class="fa fa-fw fa-github"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="mailto:zhengyidi1357@gmail.com" title="Contact Me → mailto:zhengyidi1357@gmail.com" rel="noopener" target="_blank"><i class="fa fa-fw fa-envelope"></i>Contact Me</a>
+      </span>
+  </div>
+
+
+
+      </div>
+        <div class="back-to-top motion-element">
+          <i class="fa fa-arrow-up"></i>
+          <span>0%</span>
+        </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">zhengyidi</span>
+</div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/jquery@3/dist/jquery.min.js"></script>
+  <script src="//cdn.jsdelivr.net/gh/fancyapps/fancybox@3/dist/jquery.fancybox.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
+<!-- 页面点击小红心 -->
+<!-- <script type="text/javascript" src="/js/love.js"></script> -->
+<!-- 鼠标悬浮 -->
+<script type="text/javascript" src="/js/mouse-float.js"></script>
+
+<!-- 鼠标点击爆炸效果 -->
+<canvas class="fireworks" style="position: fixed;left: 0;top: 0;z-index: 1; pointer-events: none;" ></canvas> 
+<script type="text/javascript" src="/js/fireworks/anime.min.js"></script> 
+<script type="text/javascript" src="/js/fireworks/fireworks.js"></script>
